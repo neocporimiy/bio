@@ -26,8 +26,6 @@
       50% { background-position: 100% 50%; }
       100% { background-position: 0% 50%; }
     }
-
-    /* Звёзды */
     canvas {
       position: absolute;
       top: 0;
@@ -37,8 +35,6 @@
       display: block;
       z-index: 0;
     }
-
-    /* Панель */
     .panel {
       display: flex;
       align-items: center;
@@ -99,8 +95,6 @@
       0%,100% { text-shadow: 0 0 10px rgba(255,255,255,0.6); }
       50% { text-shadow: 0 0 25px rgba(200,200,255,0.9); }
     }
-
-    /* Кнопки */
     .buttons {
       flex: 1;
       display: flex;
@@ -163,13 +157,8 @@
   </style>
 </head>
 <body>
-  <!-- Музыка -->
   <audio id="bgMusic" src="music.mp3" autoplay loop hidden></audio>
-
-  <!-- Звёзды -->
   <canvas id="stars"></canvas>
-
-  <!-- Панель -->
   <div class="panel">
     <div class="avatar">
       <img src="photo.png" alt="avatar">
@@ -184,7 +173,6 @@
   </div>
 
   <script>
-    // ==== Звёзды ====
     const canvas = document.getElementById("stars");
     const ctx = canvas.getContext("2d");
     let stars = [];
@@ -221,26 +209,19 @@
         ctx.globalAlpha = 1;
       }
     }
-
     function createStars() {
       stars = [];
       for (let i = 0; i < numStars; i++) { stars.push(new Star()); }
     }
-
     function animateStars() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       stars.forEach(star => { star.update(); star.draw(); });
       requestAnimationFrame(animateStars);
     }
-
     createStars();
     animateStars();
-
-    // ==== Музыка ====
     const music = document.getElementById("bgMusic");
-    music.volume = 0.2; // громкость 20%
-
-    // обход ограничений автозапуска
+    music.volume = 0.2;
     document.body.addEventListener("click", () => {
       music.play().catch(() => {});
     }, { once: true });
