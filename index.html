@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ultimate Cosmic UI</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&family=Noto+Sans+JP:wght@500;700&display=swap');
+
+    body {
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      font-family: "Poppins", "Noto Sans JP", sans-serif;
+      background: linear-gradient(-45deg, #0d0d0d, #1a1a1a, #2a2a3a, #1f1f2e);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      color: white;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Звёзды */
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      z-index: 0;
+    }
+
+    /* Панель */
+    .panel {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 880px;
+      max-width: 95%;
+      padding: 50px;
+      border-radius: 40px;
+      backdrop-filter: blur(25px);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 50px rgba(255, 255, 255, 0.08);
+      z-index: 2;
+      animation: panelFade 2s ease forwards;
+      opacity: 0;
+    }
+
+    @keyframes panelFade {
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Аватар */
+    .avatar {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    .avatar img {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 4px solid rgba(255,255,255,0.25);
+      box-shadow: 0 0 35px rgba(180,180,255,0.3);
+      object-fit: cover;
+      transition: transform 0.6s ease, box-shadow 0.6s ease;
+    }
+
+    .avatar img:hover {
+      transform: scale(1.1) rotate(2deg);
+      box-shadow: 0 0 50px rgba(200,200,255,0.6), 0 0 90px rgba(150,150,255,0.4);
+    }
+
+    .avatar h2 {
+      margin-top: 25px;
+      font-size: 28px;
+      font-weight: 700;
+      background: linear-gradient(90deg, #fff, #bbb, #fff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%,100% { text-shadow: 0 0 10px rgba(255,255,255,0.6); }
+      50% { text-shadow: 0 0 25px rgba(200,200,255,0.9); }
+    }
+
+    /* Кнопки */
+    .buttons {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .btn {
+      position: relative;
+      padding: 16px 45px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #fff;
+      text-decoration: none;
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.05), 
+                  inset 0 0 20px rgba(255, 255, 255, 0.05);
+      overflow: hidden;
+      transition: all 0.8s cubic-bezier(.19,1,.22,1);
+    }
+
+    .btn:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 40px rgba(255,255,255,0.5), 
+                  0 0 80px rgba(150,150,255,0.4);
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .btn::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+        120deg, 
+        transparent, 
+        rgba(255,255,255,0.4), 
+        transparent
+      );
+      transform: rotate(45deg);
+      animation: shine 5s infinite linear;
+    }
+
+    .btn span {
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes shine {
+      0% { transform: translateX(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) rotate(45deg); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Музыка -->
+  <audio id="bgMusic" src="music.mp3" autoplay loop hidden></audio>
+
+  <!-- Звёзды -->
+  <canvas id="stars"></canvas>
+
+  <!-- Панель -->
+  <div class="panel">
+    <div class="avatar">
+      <img src="photo.png" alt="avatar">
+      <h2>美しいデザイン</h2>
+    </div>
+
+    <div class="buttons">
+      <a href="https://t.me/mactepscam" class="btn"><span>Telegram — MactepScam</span></a>
+      <a href="https://github.com/neocporimiy" class="btn"><span>GitHub — Neocporimiy</span></a>
+      <a href="https://t.me/WasabiPerexod" class="btn"><span>Telegram — WasabiPerexod</span></a>
+    </div>
+  </div>
+
+  <script>
+    // ==== Звёзды ====
+    const canvas = document.getElementById("stars");
+    const ctx = canvas.getContext("2d");
+    let stars = [];
+    const numStars = 180;
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
+    class Star {
+      constructor() { this.reset(); }
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2.2;
+        this.speed = Math.random() * 0.6 + 0.2;
+        this.opacity = Math.random();
+        this.color = ["#fff", "#aaf", "#ccf", "#faf"][Math.floor(Math.random()*4)];
+      }
+      update() {
+        this.y += this.speed;
+        if (this.y > canvas.height) { this.reset(); this.y = 0; }
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.globalAlpha = this.opacity;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
+    }
+
+    function createStars() {
+      stars = [];
+      for (let i = 0; i < numStars; i++) { stars.push(new Star()); }
+    }
+
+    function animateStars() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      stars.forEach(star => { star.update(); star.draw(); });
+      requestAnimationFrame(animateStars);
+    }
+
+    createStars();
+    animateStars();
+
+    // ==== Музыка ====
+    const music = document.getElementById("bgMusic");
+    music.volume = 0.2; // громкость 20%
+
+    // обход ограничений автозапуска
+    document.body.addEventListener("click", () => {
+      music.play().catch(() => {});
+    }, { once: true });
+  </script>
+</body>
+</html>
