@@ -35,22 +35,56 @@
       display: block;
       z-index: 0;
     }
-    .panel {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 880px;
-      max-width: 95%;
-      padding: 50px;
-      border-radius: 40px;
-      backdrop-filter: blur(25px);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 0 50px rgba(255, 255, 255, 0.08);
-      z-index: 2;
-      animation: panelFade 2s ease forwards;
-      opacity: 0;
-    }
+.panel {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 880px;
+  max-width: 95%;
+  padding: 50px;
+  border-radius: 40px;
+  backdrop-filter: blur(25px);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 40px rgba(255, 255, 255, 0.05);
+  overflow: hidden;
+  z-index: 2;
+  animation: panelFade 2s ease forwards;
+  opacity: 0;
+}
+
+/* светящиеся блики */
+.panel::before,
+.panel::after {
+  content: "";
+  position: absolute;
+  width: 300%;
+  height: 300%;
+  top: -100%;
+  left: -100%;
+  background: radial-gradient(circle at center, rgba(255,255,255,0.12) 0%, transparent 70%);
+  transform: rotate(25deg);
+  animation: moveGlow 12s linear infinite;
+  z-index: 1;
+}
+.panel::after {
+  background: radial-gradient(circle at center, rgba(150,150,255,0.15) 0%, transparent 70%);
+  animation-delay: -6s;
+}
+
+@keyframes moveGlow {
+  0%   { transform: translateX(-30%) translateY(-30%) rotate(25deg); }
+  50%  { transform: translateX(30%) translateY(30%) rotate(25deg); }
+  100% { transform: translateX(-30%) translateY(-30%) rotate(25deg); }
+}
+
+/* контент должен быть поверх бликов */
+.panel > * {
+  position: relative;
+  z-index: 2;
+}
+
 
     @keyframes panelFade {
       to { opacity: 1; transform: scale(1); }
